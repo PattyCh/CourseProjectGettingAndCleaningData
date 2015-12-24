@@ -1,19 +1,24 @@
 #read the files from the UCI HAR Dataset
 #features.txt contains the labels of the features (measurements / columns of the X_train and X_test)
 rfeatures <- read.table("./UCI HAR Dataset/features.txt",skipNul = TRUE)
+
 #activity_labels.txt contains the labels of the activities (to "translate" the y_train and y_test)
 ractivitylabels <- read.table("./UCI HAR Dataset/activity_labels.txt",skipNul = TRUE)
 names(ractivitylabels) <- c("id","activity")
+
 #read files from train dir
 rytrain <- read.table("./UCI HAR Dataset/train/y_train.txt", skipNul = TRUE)
 rXtrain <- read.table("./UCI HAR Dataset/train/X_train.txt", skipNul = TRUE)
 rsubjecttrain <- read.table("./UCI HAR Dataset/train/subject_train.txt",skipNul = TRUE)
+
 #assign the names of features to the column names of Xtrain
 names(rXtrain) <- rfeatures$V2
 names(rsubjecttrain) <- c("subject_train")
 names(rytrain) <- c("act_labels")
+
 #merge the train data in one dataframe
 datatrain <- cbind(rsubjecttrain,rytrain,rXtrain)
+
 #read files from test dir
 rytest <- read.table("./UCI HAR Dataset/test/y_test.txt", skipNul = TRUE)
 rXtest <- read.table("./UCI HAR Dataset/test/X_test.txt", skipNul = TRUE)
@@ -51,10 +56,11 @@ cols3 <- gsub("^f","Frequency",cols2)
 cols4 <- gsub("*Acc*","Acceleration",cols3)
 cols5 <- gsub("*Gyro*","AngularVelocity",cols4)
 names(data4) <- cols5
+
 #5.- From the data set in step 4, creates a second, independent tidy data set with 
 #the average of each variable for each activity and each subject.
 by_act_subject <- group_by(data4, activity, subject_train)
 data5 <- summarize_each(by_act_subject,funs(mean))
 
-#save the data in a textfile
+#save the data in a textfile to submit
 write.table(data5,file="dataset5.txt",row.names = FALSE)
