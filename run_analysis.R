@@ -1,32 +1,31 @@
 #read the files from the UCI HAR Dataset
+
 #features.txt contains the labels of the features (measurements / columns of the X_train and X_test)
 rfeatures <- read.table("./UCI HAR Dataset/features.txt",skipNul = TRUE)
-
 #activity_labels.txt contains the labels of the activities (to "translate" the y_train and y_test)
 ractivitylabels <- read.table("./UCI HAR Dataset/activity_labels.txt",skipNul = TRUE)
 names(ractivitylabels) <- c("id","activity")
-
 #read files from train dir
 rytrain <- read.table("./UCI HAR Dataset/train/y_train.txt", skipNul = TRUE)
 rXtrain <- read.table("./UCI HAR Dataset/train/X_train.txt", skipNul = TRUE)
 rsubjecttrain <- read.table("./UCI HAR Dataset/train/subject_train.txt",skipNul = TRUE)
+#read files from test dir
+rytest <- read.table("./UCI HAR Dataset/test/y_test.txt", skipNul = TRUE)
+rXtest <- read.table("./UCI HAR Dataset/test/X_test.txt", skipNul = TRUE)
+rsubjecttest <- read.table("./UCI HAR Dataset/test/subject_test.txt",skipNul = TRUE)
 
 #assign the names of features to the column names of Xtrain
 names(rXtrain) <- rfeatures$V2
 names(rsubjecttrain) <- c("subject_train")
 names(rytrain) <- c("act_labels")
-
-#merge the train data in one dataframe
-datatrain <- cbind(rsubjecttrain,rytrain,rXtrain)
-
-#read files from test dir
-rytest <- read.table("./UCI HAR Dataset/test/y_test.txt", skipNul = TRUE)
-rXtest <- read.table("./UCI HAR Dataset/test/X_test.txt", skipNul = TRUE)
-rsubjecttest <- read.table("./UCI HAR Dataset/test/subject_test.txt",skipNul = TRUE)
 #assign the same colnames as before
 names(rytest) <- names(rytrain)
 names(rsubjecttest) <- names(rsubjecttrain)
 names(rXtest) <- names(rXtrain)
+
+#merge the train data in one dataframe
+datatrain <- cbind(rsubjecttrain,rytrain,rXtrain)
+
 #merge the test data in one dataframe
 datatest <- cbind(rsubjecttest,rytest,rXtest)
 
@@ -45,8 +44,9 @@ datameanstd <- datatotal[,c("subject_train","act_labels",colvalues)]
 datameanstd_act = merge(ractivitylabels,datameanstd,by.x = "id", by.y = "act_labels", all = TRUE)
 
 #4.- Appropriately labels the data set with descriptive variable names.
-#Mantain the original names of the measures, and the columns subject and activity 
-#also have their names set above. But changed to a to a syntactically valid name
+#Maintain the original names of the measures,but changed to a to a syntactically valid name and
+#human readable.
+#The columns subject and activity also have their names set above. 
 library(dplyr)
 data4 <- select(datameanstd_act,-id)
 names(data4) <- make.names(names(data4),unique = TRUE)
