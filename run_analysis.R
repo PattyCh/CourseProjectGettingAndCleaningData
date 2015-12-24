@@ -55,7 +55,8 @@ cols2 <- gsub("^t","Time",cols)
 cols3 <- gsub("^f","Frequency",cols2)
 cols4 <- gsub("*Acc*","Acceleration",cols3)
 cols5 <- gsub("*Gyro*","AngularVelocity",cols4)
-names(data4) <- cols5
+cols6 <- gsub("*BodyBody*","Body",cols5)
+names(data4) <- cols6
 
 #5.- From the data set in step 4, creates a second, independent tidy data set with 
 #the average of each variable for each activity and each subject.
@@ -63,4 +64,4 @@ by_act_subject <- group_by(data4, activity, subject_train)
 data5 <- summarize_each(by_act_subject,funs(mean))
 
 #save the data in a textfile to submit
-write.table(data5,file="dataset5.txt",row.names = FALSE)
+write.table(data5,file="dataset5_v2.txt",row.names = FALSE)
